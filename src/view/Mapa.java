@@ -13,22 +13,26 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Label;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.ImageObserver;
+import static java.lang.Thread.sleep;
 import java.text.AttributedCharacterIterator;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import model.IConstants;
-import model.JOvalBtn;
 import model.Nodo;
 import model.Posicion;
 
@@ -43,6 +47,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
      */
     private MapManager MP;
     private Hashtable<Button, Nodo> hashBotones;
+    private boolean paintLine;   
     
     public Mapa() {
         initComponents();
@@ -51,6 +56,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         this.MP.addObserver(this);
         pnl_img_ciudad.add(imagen);
         this.hashBotones = new Hashtable<Button, Nodo>();
+        this.paintLine = false;
     }
 
     /**
@@ -64,7 +70,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
 
         pnl_img_ciudad = new javax.swing.JPanel();
         btn_iniciarRecorrido = new javax.swing.JButton();
-        lbl_carro = new javax.swing.JLabel();
+        lbl_Carro = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -86,7 +92,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         );
         pnl_img_ciudadLayout.setVerticalGroup(
             pnl_img_ciudadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGap(0, 448, Short.MAX_VALUE)
         );
 
         btn_iniciarRecorrido.setText("Iniciar recorrido");
@@ -96,7 +102,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
             }
         });
 
-        lbl_carro.setText("CARRO");
+        lbl_Carro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/ico.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -105,24 +111,24 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(btn_iniciarRecorrido)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 443, Short.MAX_VALUE)
-                .addComponent(lbl_carro, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(121, 121, 121))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 420, Short.MAX_VALUE)
+                .addComponent(lbl_Carro)
+                .addGap(180, 180, 180))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnl_img_ciudad, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnl_img_ciudad, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnl_img_ciudad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(pnl_img_ciudad, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btn_iniciarRecorrido)
-                    .addComponent(lbl_carro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(lbl_Carro))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -130,13 +136,15 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
 
     private void pnl_img_ciudadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnl_img_ciudadMouseClicked
         if (!this.MP.isIniciarRecorrido()) {
-            this.MP.createNode(evt.getX(), evt.getY());  
+            this.MP.createNode(evt.getX(), evt.getY()); 
+            
         }
     }//GEN-LAST:event_pnl_img_ciudadMouseClicked
 
     private void btn_iniciarRecorridoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_iniciarRecorridoActionPerformed
         this.MP.setIniciarRecorrido(true);
         JOptionPane.showMessageDialog(this, "Presione el nodo al cual se quiere dirigir.", "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        
         
     }//GEN-LAST:event_btn_iniciarRecorridoActionPerformed
 
@@ -178,187 +186,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
     @Override
     public void update(Observable o, Object pNodo) {
         Nodo<Posicion> nodoAgregado = (Nodo<Posicion>)pNodo;
-        Graphics g = new Graphics() {
-            @Override
-            public Graphics create() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void translate(int i, int i1) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Color getColor() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void setColor(Color color) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void setPaintMode() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void setXORMode(Color color) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Font getFont() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void setFont(Font font) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public FontMetrics getFontMetrics(Font font) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Rectangle getClipBounds() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void clipRect(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void setClip(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Shape getClip() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void setClip(Shape shape) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void copyArea(int i, int i1, int i2, int i3, int i4, int i5) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawLine(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void fillRect(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void clearRect(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawRoundRect(int i, int i1, int i2, int i3, int i4, int i5) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void fillRoundRect(int i, int i1, int i2, int i3, int i4, int i5) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawOval(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void fillOval(int i, int i1, int i2, int i3) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawArc(int i, int i1, int i2, int i3, int i4, int i5) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void fillArc(int i, int i1, int i2, int i3, int i4, int i5) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawPolyline(int[] ints, int[] ints1, int i) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawPolygon(int[] ints, int[] ints1, int i) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void fillPolygon(int[] ints, int[] ints1, int i) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawString(String string, int i, int i1) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void drawString(AttributedCharacterIterator aci, int i, int i1) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean drawImage(Image image, int i, int i1, ImageObserver io) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean drawImage(Image image, int i, int i1, int i2, int i3, ImageObserver io) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean drawImage(Image image, int i, int i1, Color color, ImageObserver io) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean drawImage(Image image, int i, int i1, int i2, int i3, Color color, ImageObserver io) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean drawImage(Image image, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, ImageObserver io) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public boolean drawImage(Image image, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, Color color, ImageObserver io) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void dispose() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+        
         Button btn = new Button("");
         btn.setBounds(nodoAgregado.getDato().getX(), nodoAgregado.getDato().getY(), DIAMETRO, DIAMETRO);
         System.out.println(nodoAgregado.getDato().getX());
@@ -367,10 +195,11 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         this.add(btn);
         this.hashBotones.put(btn, nodoAgregado);
         
-        //Pintar arco
-        if(nodoAgregado.getNodoAnterior() != null){
-            paint(g, nodoAgregado);
+        if (this.MP.getUltimoInsertado() != this.MP.getPuntoPartida()) {
+            paintLine = true;
+            repaint();
         }
+       
         
     }
 
@@ -380,32 +209,15 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         Nodo<Posicion> nodoSeleccionado = hashBotones.get(ae.getSource());
         if (!this.MP.isIniciarRecorrido()) {
             this.MP.createEdge(this.MP.getUltimoInsertado(), nodoSeleccionado);
+            
         }else{
-            Stack<Nodo> recorrido = this.MP.getGrafo().travelGraph(nodoSeleccionado, this.MP.getPuntoPartida());
-            //this.MP.iniciarRecorrido(recorrido);
-            
-            //Image carro = new ImageIcon("/imagenes/carro.png").getImage();
-            //ImageIcon carroRScl = ImageIcon(carro.getScaledInstance(80, 125, Image.SCALE_SMOOTH));
-            
-            int numero=100;
-            
-            while(!recorrido.isEmpty()){
-                try {
-                    
-                    
-                    Thread.sleep(1000);
-                    Nodo<Posicion> nodoActual = recorrido.pop();
-                
-                    lbl_carro.setLocation(nodoActual.getDato().getX(), nodoActual.getDato().getY()-25);
-                   
-                    
-                } catch (InterruptedException ex) {}
-                
-            }       
-                
+            if (nodoSeleccionado != this.MP.getPuntoPartida()) {
+                mostrarRecorrido(nodoSeleccionado);
+            }else{
+                JOptionPane.showMessageDialog(this, "No es posible seleccionar el punto de partida como destino", "Error", JOptionPane.ERROR_MESSAGE);
+            }
             
         }
-        
     }
     
     public class Imagen extends javax.swing.JPanel implements IConstants{
@@ -434,15 +246,47 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_iniciarRecorrido;
-    private javax.swing.JLabel lbl_carro;
+    private javax.swing.JLabel lbl_Carro;
     private javax.swing.JPanel pnl_img_ciudad;
     // End of variables declaration//GEN-END:variables
 
-    public void paint(Graphics g, Nodo<Posicion> nodoAgregado){
-        g.drawLine(nodoAgregado.getNodoAnterior().getDato().getX(), 
-                nodoAgregado.getNodoAnterior().getDato().getY(), 
-                nodoAgregado.getDato().getX(), 
-                nodoAgregado.getDato().getY());
+    public void mostrarRecorrido(Nodo<Posicion> pNodoSeleccionado){
+        Stack<Nodo> recorrido = this.MP.getGrafo().travelGraph(pNodoSeleccionado, this.MP.getPuntoPartida());
+            
+            new Thread(){
+                public void run(){
+
+                    while(!recorrido.isEmpty()){
+                        Nodo<Posicion> nodoActual = recorrido.pop();
+                        lbl_Carro.setLocation(nodoActual.getDato().getX(), nodoActual.getDato().getY()-25);
+                        
+                        
+                        paintLine = true;
+                        repaint();
+                        System.out.println(lbl_Carro.getLocation().x);
+                            
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException ex) {
+                        }    
+                    }
+                }
+            }.start();
+    }
+    
+    
+    public void paint(Graphics g){
+        super.paint(g);
+        if (paintLine) {
+            System.out.println("asdasd");
+            Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
+            g.setColor(Color.blue);
+            g.drawLine(nodoActual.getListaAdyacentes().get(0).getDato().getX()+FIX_X, 
+                    nodoActual.getListaAdyacentes().get(0).getDato().getY()+FIX_Y, 
+                    nodoActual.getDato().getX()+FIX_X, 
+                    nodoActual.getDato().getY()+FIX_Y);
+            paintLine = false;
+        }
     }
 }
 

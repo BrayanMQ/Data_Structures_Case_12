@@ -84,9 +84,4 @@ public class MapManager extends Observable {
         return false;
     }
     
-    public void iniciarRecorrido(Stack<Nodo> recorrido){
-        
-        
-    }
-    
 }

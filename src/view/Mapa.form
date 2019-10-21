@@ -30,13 +30,13 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               <Component id="btn_iniciarRecorrido" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="443" max="32767" attributes="0"/>
-              <Component id="lbl_carro" min="-2" pref="72" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
+              <EmptySpace pref="420" max="32767" attributes="0"/>
+              <Component id="lbl_Carro" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="180" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="pnl_img_ciudad" max="32767" attributes="0"/>
+              <Component id="pnl_img_ciudad" pref="739" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -45,13 +45,13 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="pnl_img_ciudad" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="13" max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btn_iniciarRecorrido" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lbl_carro" alignment="3" max="32767" attributes="0"/>
-              </Group>
+              <Component id="pnl_img_ciudad" min="-2" pref="448" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="btn_iniciarRecorrido" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbl_Carro" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -78,7 +78,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="450" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="448" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -91,9 +91,11 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_iniciarRecorridoActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="lbl_carro">
+    <Component class="javax.swing.JLabel" name="lbl_Carro">
       <Properties>
-        <Property name="text" type="java.lang.String" value="CARRO"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/imagenes/ico.png"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>
