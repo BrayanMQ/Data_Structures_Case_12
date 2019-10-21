@@ -180,7 +180,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         
         Button btn = new Button("");
         btn.setBounds(nodoAgregado.getDato().getX(), nodoAgregado.getDato().getY(), DIAMETRO, DIAMETRO);
-        System.out.println(nodoAgregado.getDato().getX());
         btn.setBackground(Color.blue);
         btn.addActionListener(this);
         this.add(btn);
