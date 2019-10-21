@@ -9,32 +9,21 @@ import controller.MapManager;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Label;
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.ImageObserver;
 import static java.lang.Thread.sleep;
-import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import model.IConstants;
 import model.Nodo;
 import model.Posicion;
+import model.Linea;
 
 /**
  *
@@ -48,6 +37,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
     private MapManager MP;
     private Hashtable<Button, Nodo> hashBotones;
     private boolean paintLine;   
+    private ArrayList<Linea> listaLineas;
     
     public Mapa() {
         initComponents();
@@ -57,6 +47,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         pnl_img_ciudad.add(imagen);
         this.hashBotones = new Hashtable<Button, Nodo>();
         this.paintLine = false;
+        this.listaLineas = new ArrayList<>();
     }
 
     /**
@@ -277,17 +268,24 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
     
     public void paint(Graphics g){
         super.paint(g);
+
         if (paintLine) {
-            System.out.println("asdasd");
             Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
-            g.setColor(Color.blue);
-            g.drawLine(nodoActual.getListaAdyacentes().get(0).getDato().getX()+FIX_X, 
-                    nodoActual.getListaAdyacentes().get(0).getDato().getY()+FIX_Y, 
-                    nodoActual.getDato().getX()+FIX_X, 
-                    nodoActual.getDato().getY()+FIX_Y);
+             Linea linea = new Linea(nodoActual.getListaAdyacentes().get(0).getDato().getX()+FIX_X,
+                     nodoActual.getListaAdyacentes().get(0).getDato().getY()+FIX_Y,
+                     nodoActual.getDato().getX()+FIX_X, 
+                     nodoActual.getDato().getY()+FIX_Y);
+            listaLineas.add(linea);
             paintLine = false;
         }
+    
+        for (Linea linea : listaLineas) {
+            linea.pintarLinea(g);
+        }
+        
     }
+    
+   
 }
 
 
