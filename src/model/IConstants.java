@@ -9,4 +9,6 @@ public interface IConstants {
    public static int FIX_X = 15;
    public static int FIX_Y = 39;
    public static int NODO_ANTERIOR = 0;
+   public static boolean SI_ES_BOTON = true;
+   public static boolean NO_ES_BOTON = false;
 }

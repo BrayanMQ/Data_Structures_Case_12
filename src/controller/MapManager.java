@@ -56,8 +56,6 @@ public class MapManager extends Observable {
         this.ultimoInsertado = ultimoInsertado;
     }
     
-    
-    
     public boolean createNode(int pX, int pY){
 
         Posicion posicion = new Posicion(pX, pY);

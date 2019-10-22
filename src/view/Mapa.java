@@ -36,7 +36,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
      */
     private MapManager MP;
     private Hashtable<Button, Nodo> hashBotones;
-    private boolean paintLine;   
     private ArrayList<Linea> listaLineas;
     
     public Mapa() {
@@ -46,7 +45,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         this.MP.addObserver(this);
         pnl_img_ciudad.add(imagen);
         this.hashBotones = new Hashtable<Button, Nodo>();
-        this.paintLine = false;
         this.listaLineas = new ArrayList<>();
     }
 
@@ -186,19 +184,16 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         this.hashBotones.put(btn, nodoAgregado);
         
         if (this.MP.getUltimoInsertado() != this.MP.getPuntoPartida()) {
-            paintLine = true;
-            crearLinea(nodoAgregado, false);
+            crearLinea(nodoAgregado, NO_ES_BOTON);
             repaint();
         }
-       
-        
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
         
         Nodo<Posicion> nodoSeleccionado = hashBotones.get(ae.getSource());
-        crearLinea(nodoSeleccionado, true);
+        crearLinea(nodoSeleccionado, SI_ES_BOTON);
         repaint();
         this.MP.setUltimoInsertado(nodoSeleccionado);
         if (!this.MP.isIniciarRecorrido()) {
@@ -253,11 +248,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
                         Nodo<Posicion> nodoActual = recorrido.pop();
                         lbl_Carro.setLocation(nodoActual.getDato().getX(), nodoActual.getDato().getY()-25);
                         
-                        
-                        paintLine = true;
                         repaint();
-                        System.out.println(lbl_Carro.getLocation().x);
-                            
                         try {
                             sleep(1000);
                         } catch (InterruptedException ex) {
@@ -270,10 +261,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
     
     public void paint(Graphics g){
         super.paint(g);
-
-        if (paintLine) {
-            paintLine = false;
-        }
     
         for (Linea linea : listaLineas) {
             linea.pintarLinea(g);
@@ -298,16 +285,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         }
         listaLineas.add(linea);
     }
-    
-   
-    
-//    Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
-//             Linea linea = new Linea(nodoActual.getListaAdyacentes().get(NODO_ANTERIOR).getDato().getX()+FIX_X,
-//                     nodoActual.getListaAdyacentes().get(NODO_ANTERIOR).getDato().getY()+FIX_Y,
-//                     nodoActual.getDato().getX()+FIX_X, 
-//                     nodoActual.getDato().getY()+FIX_Y);
-//            listaLineas.add(linea);
-//            paintLine = false;
 }
 
 
