@@ -51,6 +51,12 @@ public class MapManager extends Observable {
     public Nodo getUltimoInsertado() {
         return ultimoInsertado;
     }
+
+    public void setUltimoInsertado(Nodo ultimoInsertado) {
+        this.ultimoInsertado = ultimoInsertado;
+    }
+    
+    
     
     public boolean createNode(int pX, int pY){
 

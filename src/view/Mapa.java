@@ -187,6 +187,7 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         
         if (this.MP.getUltimoInsertado() != this.MP.getPuntoPartida()) {
             paintLine = true;
+            crearLinea(nodoAgregado, false);
             repaint();
         }
        
@@ -197,6 +198,9 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
     public void actionPerformed(ActionEvent ae) {
         
         Nodo<Posicion> nodoSeleccionado = hashBotones.get(ae.getSource());
+        crearLinea(nodoSeleccionado, true);
+        repaint();
+        this.MP.setUltimoInsertado(nodoSeleccionado);
         if (!this.MP.isIniciarRecorrido()) {
             this.MP.createEdge(this.MP.getUltimoInsertado(), nodoSeleccionado);
             
@@ -206,7 +210,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
             }else{
                 JOptionPane.showMessageDialog(this, "No es posible seleccionar el punto de partida como destino", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
         }
     }
     
@@ -269,12 +272,6 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         super.paint(g);
 
         if (paintLine) {
-            Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
-             Linea linea = new Linea(nodoActual.getListaAdyacentes().get(0).getDato().getX()+FIX_X,
-                     nodoActual.getListaAdyacentes().get(0).getDato().getY()+FIX_Y,
-                     nodoActual.getDato().getX()+FIX_X, 
-                     nodoActual.getDato().getY()+FIX_Y);
-            listaLineas.add(linea);
             paintLine = false;
         }
     
@@ -284,7 +281,33 @@ public class Mapa extends javax.swing.JFrame implements IConstants, Observer, Ac
         
     }
     
+    public void crearLinea(Nodo <Posicion> pNodo, boolean esBoton){
+        Linea linea = null;
+        if (esBoton) {
+            Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
+            linea = new Linea(nodoActual.getDato().getX()+FIX_X,
+                                    nodoActual.getDato().getY()+FIX_Y,
+                                    pNodo.getDato().getX()+FIX_X,
+                                    pNodo.getDato().getY()+FIX_Y);
+        }else{
+            Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
+             linea = new Linea(nodoActual.getListaAdyacentes().get(NODO_ANTERIOR).getDato().getX()+FIX_X,
+                     nodoActual.getListaAdyacentes().get(NODO_ANTERIOR).getDato().getY()+FIX_Y,
+                     nodoActual.getDato().getX()+FIX_X, 
+                     nodoActual.getDato().getY()+FIX_Y);
+        }
+        listaLineas.add(linea);
+    }
+    
    
+    
+//    Nodo <Posicion> nodoActual = this.MP.getUltimoInsertado();
+//             Linea linea = new Linea(nodoActual.getListaAdyacentes().get(NODO_ANTERIOR).getDato().getX()+FIX_X,
+//                     nodoActual.getListaAdyacentes().get(NODO_ANTERIOR).getDato().getY()+FIX_Y,
+//                     nodoActual.getDato().getX()+FIX_X, 
+//                     nodoActual.getDato().getY()+FIX_Y);
+//            listaLineas.add(linea);
+//            paintLine = false;
 }
 
 

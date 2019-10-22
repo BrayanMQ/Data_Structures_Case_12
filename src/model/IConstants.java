@@ -8,4 +8,5 @@ public interface IConstants {
    public static int DIAMETRO = 30;
    public static int FIX_X = 15;
    public static int FIX_Y = 39;
+   public static int NODO_ANTERIOR = 0;
 }
